@@ -1,0 +1,19 @@
+-- Consultas UPDATE válidas
+actualizar usuarios establecer nombre a 'nuevo';
+cambiar usuarios establecer email a 'nuevo@email.com';
+modificar usuarios establecer edad a 25;
+alterar usuarios establecer activo a 1 donde id mayor 5;
+actualizar usuarios establecer nombre a 'ana' donde id igual 1;
+cambiar usuarios establecer email a 'ana@email.com' donde id menor igual 10;
+modificar usuarios establecer edad a 30 donde id menor igual 20;
+alterar usuarios establecer activo a 0 donde id igual 2 y nombre igual 'ana';
+
+-- Consultas UPDATE con errores
+actualizar usuarios nombre a 'nuevo';
+cambiar usuarios establecer a 'nuevo';
+modificar usuarios establecer edad 25;
+alterar usuarios establecer activo a donde id igual 5;
+actualizar usuarios establecer nombre a 'ana' donde ;
+cambiar usuarios establecer email a 'ana@email.com' donde id igual ;
+modificar usuarios establecer edad a 30 donde igual 20;
+alterar usuarios establecer activo a 0 donde id igual 2 y ;

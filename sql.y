@@ -103,11 +103,16 @@ seleccion:
     SELECCIONAR campos DE IDENTIFICADOR
     {
         printf("SELECT %s FROM %s;\n", $2, $4);
+        free($2);
+        free($4);
     }
     |
     SELECCIONAR campos DE IDENTIFICADOR DONDE condicion
     {
         printf("SELECT %s FROM %s WHERE %s;\n", $2, $4, $6);
+        free($2);
+        free($4);
+        free($6);
     }
     ;
 
@@ -178,12 +183,17 @@ valor:
 actualizacion:
     ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor
     {
-        printf("UPDATE '%s' SET '%s' en tabla;\n", $2, $4);
+        printf("UPDATE %s SET %s = %s;\n", $2, $4, $6);
+        free($4); 
+        free($6);
     }
     |
     ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor DONDE condicion
     {
-        printf("Comando ACTUALIZAR con condición en tabla '%s';\n", $2);
+        printf("UPDATE %s SET %s = %s WHERE %s;\n", $2, $4, $6, $8);
+        free($4); 
+        free($6); 
+        free($8);
     }
     ;
 
@@ -192,11 +202,14 @@ eliminacion:
     ELIMINAR DE IDENTIFICADOR
     {
         printf("DELETE FROM %s;\n", $3);
+        free($3);
     }
     |
     ELIMINAR DE IDENTIFICADOR DONDE condicion
     {
         printf("DELETE FROM %s WHERE %s;\n", $3, $5);
+        free($3); 
+        free($5);
     }
     ;
 
