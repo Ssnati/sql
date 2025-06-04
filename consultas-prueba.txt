@@ -1,7 +1,0 @@
-insertar en usuarios valores ('1','admin');
-añadir en usuarios valores ('2','user1','password1');
-agregar en usuarios valores (3,'user2','password2');
-introducir en usuarios valores (3,'user2','password2', 4);
-ingresar en usuarios valores (5,'user3','password3', 4, '2023-10-01');
-insertar en usuarios (id,name) valores ('1','admin');
-añadir en usuarios (eoruioew, eworew, wqrereq,rqe,qrereq, qrew, qer,qre,qre,qre,qre,qre,qre,qre,qrew,qwre,qwre,qrew) valores (1);

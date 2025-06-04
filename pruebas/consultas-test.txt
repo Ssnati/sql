@@ -1,0 +1,22 @@
+insertar en usuarios valores ('1','admin');
+introducir en usuarios valores ('2','user1','password1');
+agregar en usuarios valores (3,'user2','password2');
+ingresar en usuarios valores (3,'user2','password2', 4);
+insertar en usuarios (id,name) valores ('1','admin');
+actualizar usuarios establecer name a 'nuevo' si id es igual a 1;
+seleccionar todos de usuarios;
+seleccionar de usuarios donde id es igual a 1;
+eliminar de usuarios si id es igual a 1;
+
+// Errores sintácticos
+insertar en usuarios valores '1','admin'; // Falta paréntesis
+insertar en usuarios valores (1,admin); // Falta comillas en admin
+insertar usuarios valores ('1','admin'); // Falta 'en'
+insertar en usuarios (id name) valores ('1','admin'); // Falta coma entre campos
+insertar en usuarios (id,) valores ('1','admin'); // Coma extra
+insertar en usuarios valores (); // Lista vacía
+insertar en usuarios valores (1,,2); // Doble coma
+insertar en usuarios valores (1 2); // Falta coma
+insertar en usuarios valores (1 'admin'); // Falta coma
+insertar en usuarios valores (1, 'admin' // Falta paréntesis de cierre
+
