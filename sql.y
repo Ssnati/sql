@@ -113,7 +113,10 @@ seleccion:
 
 /* “campos” puede ser TODOS o una lista de identificadores */
 campos:
-    TODOS          { /* aquí ya no declaramos valor semántico */}
+    TODOS          
+    {
+        $$ = strdup("*");
+    }
     | lista_campos
     ;
 
@@ -244,7 +247,7 @@ void yyerror(const char *s) {
 /* Función main (opcional)                            */
 /* -------------------------------------------------- */
 int main() {
-    printf("Ingrese una instrucción SQL en español (CTRL+D para salir):\n");
+//    printf("Ingrese una instrucción SQL en español (CTRL+D para salir):\n");
     yyparse();
     return 0;
 }
