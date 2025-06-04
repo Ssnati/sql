@@ -1,0 +1,16 @@
+-- Consultas DELETE válidas
+borrar de usuarios;
+remover de usuarios donde id igual 1;
+quitar de usuarios donde id mayor que 5;
+eliminar de usuarios donde id igual 1 y nombre igual 'ana';
+retirar de usuarios donde id igual 1 o nombre igual 'ana';
+
+-- Consultas DELETE con errores
+eliminar de usuarios donde id igual 1 y (nombre igual 'ana' o email igual 'ana@x.com');
+borrar usuarios;
+remover de ;
+quitar de usuarios donde ;
+eliminar de usuarios donde id igual ;
+retirar de usuarios donde igual 1;
+eliminar de usuarios donde id 1;
+remover de usuarios donde id igual 1 y ;

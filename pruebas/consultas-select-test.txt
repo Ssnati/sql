@@ -1,24 +1,22 @@
 -- Consultas SELECT válidas
-seleccionar todos de usuarios;
 seleccionar * de usuarios;
-seleccionar id, nombre, email de usuarios;
-seleccionar id, nombre de usuarios donde id igual 1;
-seleccionar id, nombre de usuarios donde id mayor 1;
-seleccionar id, nombre de usuarios donde id mayor igual 1;
-seleccionar id, nombre de usuarios donde id menor igual 10;
-seleccionar id, nombre de usuarios donde id igual 1 y nombre igual 'ana';
-seleccionar id, nombre de usuarios donde id igual 1 o nombre igual 'ana';
+leer id, nombre, email de usuarios;
+revisar id, nombre de usuarios donde id igual 1;
+ver id, nombre de usuarios donde id mayor que 1;
+mostrar id, nombre de usuarios donde id mayor igual que 1;
+seleccionar id, nombre de usuarios donde id menor igual que 10;
+leer id, nombre de usuarios donde id igual 1 y nombre igual 'ana';
+revisar id, nombre de usuarios donde id igual 1 o nombre igual 'ana';
 
 -- Consultas SELECT con errores
-seleccionar id, nombre de usuarios donde id igual 1 y (nombre igual 'ana' o email igual 'ana@x.com');
+ver id, nombre de usuarios donde id igual 1 y (nombre igual 'ana' o email igual 'ana@x.com');
 seleccionar de usuarios;
-seleccionar id nombre de usuarios;
-seleccionar id, de usuarios;
-seleccionar id, nombre usuarios;
-seleccionar id, nombre de ;
+leer id nombre de usuarios;
+revisar id, de usuarios;
+ver id, nombre usuarios;
+mostrar id, nombre de ;
 seleccionar id, nombre de usuarios donde ;
-seleccionar id, nombre de usuarios donde id igual ;
-seleccionar id, nombre de usuarios donde igual 1;
-seleccionar id, nombre de usuarios donde id 1;
-seleccionar id, nombre de usuarios donde id igual 1 y ;
-seleccionar id, nombre de usuarios donde id mayor igual que 1;
+leer id, nombre de usuarios donde id igual ;
+revisar id, nombre de usuarios donde igual 1;
+ver id, nombre de usuarios donde id 1;
+mostrar id, nombre de usuarios donde id igual 1 y ;

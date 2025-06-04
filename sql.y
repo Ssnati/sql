@@ -191,12 +191,12 @@ actualizacion:
 eliminacion:
     ELIMINAR DE IDENTIFICADOR
     {
-        printf("Comando ELIMINAR de tabla '%s'\n", $3);
+        printf("DELETE FROM '%s'\n", $3);
     }
     |
     ELIMINAR DE IDENTIFICADOR DONDE condicion
     {
-        printf("Comando ELIMINAR con condición en tabla '%s'\n", $3);
+        printf("DELETE FROM '%s' WHERE %s\n", $3, $5);
     }
     ;
 
