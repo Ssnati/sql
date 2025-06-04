@@ -86,6 +86,16 @@ insercion:
         printf("INSERT INTO %s VALUES (%s);\n", $3, $6);
         free($6);
     }
+    |
+    INSERTAR EN IDENTIFICADOR PAR_ABRE lista_campos PAR_CIERRA VALORES PAR_ABRE lista_valores PAR_CIERRA
+    {
+        /* $3 = IDENTIFICADOR (nombre de la tabla)
+           $6 = lista_valores (string con "val1, val2, ...") */
+        printf("INSERT INTO %s (%s) VALUES (%s);\n", $3, $5, $9);
+        free($5);
+        free($9);
+    }
+	
     ;
 
 /* ------ Selección (SELECT) ------ */
@@ -109,8 +119,12 @@ campos:
 
 /* “lista_campos” es simplemente IDENTIFICADOR (',' IDENTIFICADOR)* */
 lista_campos:
-      IDENTIFICADOR          { /* no propagamos nada */ }
-    | lista_campos COMA IDENTIFICADOR  { /* tampoco */ }
+      IDENTIFICADOR          { $$ = strdup($1);}
+    | lista_campos COMA IDENTIFICADOR  { 
+      char* temp = concat3($1, ", ", $3);
+      free($1);
+      $$ = temp;
+    }
     ;
 
 /* ------ Valores para INSERTAR ------ */
