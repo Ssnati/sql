@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define OUTPUT_FILE "queries-result.txt"
+
 /* Prototipos */
 void yyerror(const char *s);
 int yylex(void);
@@ -81,17 +83,21 @@ sentencia:
 insercion:
     INSERTAR EN IDENTIFICADOR VALORES PAR_ABRE lista_valores PAR_CIERRA
     {
-        /* $3 = IDENTIFICADOR (nombre de la tabla)
-           $6 = lista_valores (string con "val1, val2, ...") */
-        printf("INSERT INTO %s VALUES (%s);\n", $3, $6);
+        FILE *f = fopen(OUTPUT_FILE, "a");
+        if (f) {
+            fprintf(f, "INSERT INTO %s VALUES (%s);\n", $3, $6);
+            fclose(f);
+        }
         free($6);
     }
     |
     INSERTAR EN IDENTIFICADOR PAR_ABRE lista_campos PAR_CIERRA VALORES PAR_ABRE lista_valores PAR_CIERRA
     {
-        /* $3 = IDENTIFICADOR (nombre de la tabla)
-           $6 = lista_valores (string con "val1, val2, ...") */
-        printf("INSERT INTO %s (%s) VALUES (%s);\n", $3, $5, $9);
+        FILE *f = fopen(OUTPUT_FILE, "a");
+        if (f) {
+            fprintf(f, "INSERT INTO %s (%s) VALUES (%s);\n", $3, $5, $9);
+            fclose(f);
+        }
         free($5);
         free($9);
     }
@@ -102,14 +108,22 @@ insercion:
 seleccion:
     SELECCIONAR campos DE IDENTIFICADOR
     {
-        printf("SELECT %s FROM %s;\n", $2, $4);
+        FILE *f = fopen(OUTPUT_FILE, "a");
+        if (f) {
+            fprintf(f, "SELECT %s FROM %s;\n", $2, $4);
+            fclose(f);
+        }
         free($2);
         free($4);
     }
     |
     SELECCIONAR campos DE IDENTIFICADOR DONDE condicion
     {
-        printf("SELECT %s FROM %s WHERE %s;\n", $2, $4, $6);
+        FILE *f = fopen(OUTPUT_FILE, "a");
+        if (f) {
+            fprintf(f, "SELECT %s FROM %s WHERE %s;\n", $2, $4, $6);
+            fclose(f);
+        }
         free($2);
         free($4);
         free($6);
@@ -183,14 +197,22 @@ valor:
 actualizacion:
     ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor
     {
-        printf("UPDATE %s SET %s = %s;\n", $2, $4, $6);
+        FILE *f = fopen(OUTPUT_FILE, "a");
+        if (f) {
+            fprintf(f, "UPDATE %s SET %s = %s;\n", $2, $4, $6);
+            fclose(f);
+        }
         free($4); 
         free($6);
     }
     |
     ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor DONDE condicion
     {
-        printf("UPDATE %s SET %s = %s WHERE %s;\n", $2, $4, $6, $8);
+        FILE *f = fopen(OUTPUT_FILE, "a");
+        if (f) {
+            fprintf(f, "UPDATE %s SET %s = %s WHERE %s;\n", $2, $4, $6, $8);
+            fclose(f);
+        }
         free($4); 
         free($6); 
         free($8);
@@ -201,13 +223,21 @@ actualizacion:
 eliminacion:
     ELIMINAR DE IDENTIFICADOR
     {
-        printf("DELETE FROM %s;\n", $3);
+        FILE *f = fopen(OUTPUT_FILE, "a");
+        if (f) {
+            fprintf(f, "DELETE FROM %s;\n", $3);
+            fclose(f);
+        }
         free($3);
     }
     |
     ELIMINAR DE IDENTIFICADOR DONDE condicion
     {
-        printf("DELETE FROM %s WHERE %s;\n", $3, $5);
+        FILE *f = fopen(OUTPUT_FILE, "a");
+        if (f) {
+            fprintf(f, "DELETE FROM %s WHERE %s;\n", $3, $5);
+            fclose(f);
+        }
         free($3); 
         free($5);
     }
@@ -264,3 +294,4 @@ int main() {
     yyparse();
     return 0;
 }
+
