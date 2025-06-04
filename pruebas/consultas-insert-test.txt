@@ -3,10 +3,13 @@ introducir en usuarios valores ('2','user1','password1');
 agregar en usuarios valores (3,'user2','password2');
 ingresar en usuarios valores (3,'user2','password2', 4);
 insertar en usuarios (id,name) valores ('1','admin');
-actualizar usuarios establecer name a 'nuevo' si id es igual a 1;
-seleccionar todos de usuarios;
-seleccionar de usuarios donde id es igual a 1;
-eliminar de usuarios si id es igual a 1;
+insertar en usuarios (id,name,edad) valores ('1','admin', 25);
+agregar en usuarios (id, nombre, email) valores (3, 'user2', 'user2@mail.com');
+introducir en usuarios (id, nombre) valores (4, 'otro');
+ingresar en usuarios (id, nombre, email, activo) valores (5, 'user3', 'user3@mail.com', 1);
+insertar en usuarios (id) valores (6);
+insertar en usuarios valores ('solo_uno');
+insertar en usuarios valores (7, 'user7', 'user7@mail.com', 0, '2025-06-04');
 
 // Errores sintácticos
 insertar en usuarios valores '1','admin'; // Falta paréntesis

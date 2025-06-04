@@ -31,4 +31,3 @@ while IFS= read -r line || [ -n "$line" ]; do
   echo
   sleep 0.1
 done < "$INPUT_FILE"
-

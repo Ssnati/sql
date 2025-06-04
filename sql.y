@@ -40,7 +40,7 @@ char* concat3(const char *s1, const char *s2, const char *s3) {
 
 %token INSERTAR EN VALORES SELECCIONAR DE DONDE TODOS
 %token ACTUALIZAR ESTABLECER A SI ELIMINAR
-%token ES IGUAL MAYOR MENOR QUE Y O
+%token ES IGUAL MAYOR MENOR DISTINTO NO QUE Y O
 
 %token PAR_ABRE PAR_CIERRA COMA
 %token EOL
@@ -48,7 +48,7 @@ char* concat3(const char *s1, const char *s2, const char *s3) {
 /* -------------------------------------------------- */
 /* QUITAMOS el tipo <sval> de “campos” porque no lo usamos */
 /* -------------------------------------------------- */
-%type <sval> campos lista_campos lista_valores condicion valor
+%type <sval> campos lista_campos lista_valores condicion valor operador
 
 
 /* -------------------------------------------------- */
@@ -102,28 +102,29 @@ insercion:
 seleccion:
     SELECCIONAR campos DE IDENTIFICADOR
     {
-        printf("Comando SELECCIONAR campos de tabla '%s'\n", $4);
+        printf("SELECT %s FROM %s;\n", $2, $4);
     }
     |
     SELECCIONAR campos DE IDENTIFICADOR DONDE condicion
     {
-        printf("Comando SELECCIONAR con condición en tabla '%s'\n", $4);
+        printf("SELECT %s FROM %s WHERE %s;\n", $2, $4, $6);
     }
     ;
 
 /* “campos” puede ser TODOS o una lista de identificadores */
 campos:
-      TODOS          { /* aquí ya no declaramos valor semántico */}
+    TODOS          { /* aquí ya no declaramos valor semántico */}
     | lista_campos
     ;
 
 /* “lista_campos” es simplemente IDENTIFICADOR (',' IDENTIFICADOR)* */
 lista_campos:
-      IDENTIFICADOR          { $$ = strdup($1);}
-    | lista_campos COMA IDENTIFICADOR  { 
-      char* temp = concat3($1, ", ", $3);
-      free($1);
-      $$ = temp;
+    IDENTIFICADOR          { $$ = strdup($1); }
+    | lista_campos COMA IDENTIFICADOR  
+    { 
+        char* temp = concat3($1, ", ", $3);
+        free($1);
+        $$ = temp;
     }
     ;
 
@@ -131,53 +132,53 @@ lista_campos:
 /* Cada valor produce un <sval>, y lista_valores va concatenando */
 lista_valores:
     valor                  
-        { 
-            /* primer elemento: simplemente lo heredamos */
-            $$ = $1;  
-        }
+    { 
+        /* primer elemento: simplemente lo heredamos */
+        $$ = $1;  
+    }
     | lista_valores COMA valor    
-        {
-            /* Concatenamos: lista_valores previas + ", " + este valor */
-            char *tmp = concat3($1, ", ", $3);
-            free($1);
-            free($3);
-            $$ = tmp;
-        }
+    {
+        /* Concatenamos: lista_valores previas + ", " + este valor */
+        char *tmp = concat3($1, ", ", $3);
+        free($1);
+        free($3);
+        $$ = tmp;
+    }
     ;
 
 /* Un “valor” puede ser número o cadena; devolvemos un string en $$ */
 valor:
-      NUMERO   
-        {
-            /* Convertimos el número en string */
-            char buf[32];
-            snprintf(buf, sizeof(buf), "%d", $1);
-            $$ = strdup(buf);
-        }
+    NUMERO   
+    {
+        /* Convertimos el número en string */
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%d", $1);
+        $$ = strdup(buf);
+    }
     | CADENA   
-        {
-            /* Añadimos comillas simples alrededor de la cadena */
-            size_t len = strlen($1);
-            /* +3: 2 comillas + \0 */
-            char *tmp = (char*)malloc(len + 3);
-            if (!tmp) {
-                fprintf(stderr, "Error de memoria al procesar CADENA\n");
-                exit(EXIT_FAILURE);
-            }
-            sprintf(tmp, "'%s'", $1);
-            free($1);
-            $$ = tmp;
+    {
+        /* Añadimos comillas simples alrededor de la cadena */
+        size_t len = strlen($1);
+        /* +3: 2 comillas + \0 */
+        char *tmp = (char*)malloc(len + 3);
+        if (!tmp) {
+            fprintf(stderr, "Error de memoria al procesar CADENA\n");
+            exit(EXIT_FAILURE);
         }
+        sprintf(tmp, "'%s'", $1);
+        free($1);
+        $$ = tmp;
+    }
     ;
 
 /* ------ Actualización (UPDATE) ------ */
 actualizacion:
-      ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor
+    ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor
     {
         printf("UPDATE '%s' SET '%s' en tabla\n", $2, $4);
     }
-  |
-      ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor DONDE condicion
+    |
+    ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor DONDE condicion
     {
         printf("Comando ACTUALIZAR con condición en tabla '%s'\n", $2);
     }
@@ -185,12 +186,12 @@ actualizacion:
 
 /* ------ Eliminación (DELETE) ------ */
 eliminacion:
-      ELIMINAR DE IDENTIFICADOR
+    ELIMINAR DE IDENTIFICADOR
     {
         printf("Comando ELIMINAR de tabla '%s'\n", $3);
     }
-  |
-      ELIMINAR DE IDENTIFICADOR DONDE condicion
+    |
+    ELIMINAR DE IDENTIFICADOR DONDE condicion
     {
         printf("Comando ELIMINAR con condición en tabla '%s'\n", $3);
     }
@@ -198,16 +199,36 @@ eliminacion:
 
 /* ------ Condiciones con AND/OR ------ */
 condicion:
-      IDENTIFICADOR operador valor         { /* acción vacía */ }
-    | condicion Y condicion                 { /* acción vacía */ }
-    | condicion O condicion                 { /* acción vacía */ }
+    IDENTIFICADOR operador valor         
+    {
+        char *tmp = concat3($1, " ", $2);
+        char *res = concat3(tmp, " ", $3);
+        free(tmp); free($1); free($2); free($3);
+        $$ = res;
+    }
+    | condicion Y condicion                 
+    {
+        char *tmp = concat3($1, " AND ", $3);
+        free($1); free($3);
+        $$ = tmp;
+    }
+    | condicion O condicion                 
+    {
+        char *tmp = concat3($1, " OR ", $3);
+        free($1); free($3);
+        $$ = tmp;
+    }
     ;
 
 /* Operadores básicos (=, >, <) */
-operador:
-      IGUAL
-    | MAYOR
-    | MENOR
+operador: 
+    IGUAL           { $$ = strdup("="); }
+    | MAYOR         { $$ = strdup(">"); }
+    | MENOR         { $$ = strdup("<"); }
+    | MAYOR IGUAL   { $$ = strdup(">="); }
+    | MENOR IGUAL   { $$ = strdup("<="); }
+    | DISTINTO      { $$ = strdup("!="); }
+    | NO IGUAL      { $$ = strdup("!="); }
     ;
 
 %%
@@ -227,5 +248,3 @@ int main() {
     yyparse();
     return 0;
 }
-
-

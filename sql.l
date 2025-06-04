@@ -23,9 +23,11 @@
 "eliminar"|"borrar"|"quitar"|"remover"|"retirar"      { return ELIMINAR; }
 "es"            { return ES; }
 "igual"         { return IGUAL; }
+"distinto"      { return DISTINTO; }
 "mayor"         { return MAYOR; }
 "menor"         { return MENOR; }
 "que"           { return QUE; }
+"no"            { return NO; }
 "y"             { return Y; }
 "o"             { return O; }
 
