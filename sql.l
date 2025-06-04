@@ -2,15 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "sql.tab.h"
-
-
 %}
 
 %option noyywrap
 %option yylineno
 
 %%
-
 
 "insertar"|"agregar"|"añadir"|"introducir"|"ingresar"      { return INSERTAR; }
 "en"            { return EN; }
@@ -37,31 +34,31 @@
     return IDENTIFICADOR;
 }
 
-
 \'[^\']*\' {
-     yylval.sval = strdup(yytext + 1);
+    yylval.sval = strdup(yytext + 1);
     yylval.sval[strlen(yylval.sval) - 1] = '\0';
     return CADENA;
 }
-
+\"[^\"]*\" {
+    yylval.sval = strdup(yytext + 1);
+    yylval.sval[strlen(yylval.sval) - 1] = '\0';
+    return CADENA;
+}
 
 [0-9]+ {
     yylval.ival = atoi(yytext);
     return NUMERO;
 }
 
-
 "("             { return PAR_ABRE; }
 ")"             { return PAR_CIERRA; }
 ","             { return COMA; }
-
+";"             { return EOL; }
 
 [ \t\n]+        { /* Ignorar */ }
 
-
 .               {
     fprintf(stderr, "Error léxico en línea %d: Carácter inesperado '%s'\n", yylineno, yytext);
-
 }
-
 %%
+

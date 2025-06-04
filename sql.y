@@ -6,6 +6,22 @@
 /* Prototipos */
 void yyerror(const char *s);
 int yylex(void);
+
+/* -------------------------------------------------- */
+/* Función auxiliar para concatenar tres cadenas       */
+/* -------------------------------------------------- */
+char* concat3(const char *s1, const char *s2, const char *s3) {
+    size_t len = strlen(s1) + strlen(s2) + strlen(s3) + 1;
+    char *r = (char*)malloc(len);
+    if (!r) {
+        fprintf(stderr, "Error de memoria en concat3\n");
+        exit(EXIT_FAILURE);
+    }
+    strcpy(r, s1);
+    strcat(r, s2);
+    strcat(r, s3);
+    return r;
+}
 %}
 
 /* -------------------------------------------------- */
@@ -13,7 +29,7 @@ int yylex(void);
 /* -------------------------------------------------- */
 %union {
     int    ival;   /* para token NUMERO */
-    char*  sval;   /* para IDENTIFICADOR y CADENA */
+    char*  sval;   /* para IDENTIFICADOR, CADENA, lista_valores, valor */
 }
 
 /* -------------------------------------------------- */
@@ -27,11 +43,13 @@ int yylex(void);
 %token ES IGUAL MAYOR MENOR QUE Y O
 
 %token PAR_ABRE PAR_CIERRA COMA
+%token EOL
 
 /* -------------------------------------------------- */
 /* QUITAMOS el tipo <sval> de “campos” porque no lo usamos */
 /* -------------------------------------------------- */
-/* %type <sval> campos lista_campos lista_valores condicion */
+%type <sval> campos lista_campos lista_valores condicion valor
+
 
 /* -------------------------------------------------- */
 /* Precedencia y asociatividad para Y (AND) y O (OR)   */
@@ -48,12 +66,12 @@ int yylex(void);
 /* Punto de entrada: pueden haber varias sentencias seguidas */
 entrada:
       /* línea vacía o EOF: nada que hacer */
-    | entrada sentencia '\n'
+    | entrada sentencia EOL
     ;
 
 /* Una sentencia es cualquiera de los cuatro comandos SQL */
 sentencia:
-      insercion
+    insercion
     | seleccion
     | actualizacion
     | eliminacion
@@ -63,7 +81,10 @@ sentencia:
 insercion:
     INSERTAR EN IDENTIFICADOR VALORES PAR_ABRE lista_valores PAR_CIERRA
     {
-        printf("INSERT INTO '%s' VALUES ()\n", $3);
+        /* $3 = IDENTIFICADOR (nombre de la tabla)
+           $6 = lista_valores (string con "val1, val2, ...") */
+        printf("INSERT INTO '%s' VALUES (%s)\n", $3, $6);
+        free($6);
     }
     ;
 
@@ -73,7 +94,7 @@ seleccion:
     {
         printf("Comando SELECCIONAR campos de tabla '%s'\n", $4);
     }
-  |
+    |
     SELECCIONAR campos DE IDENTIFICADOR DONDE condicion
     {
         printf("Comando SELECCIONAR con condición en tabla '%s'\n", $4);
@@ -82,7 +103,7 @@ seleccion:
 
 /* “campos” puede ser TODOS o una lista de identificadores */
 campos:
-      TODOS           /* aquí ya no declaramos valor semántico */
+      TODOS          { /* aquí ya no declaramos valor semántico */}
     | lista_campos
     ;
 
@@ -93,22 +114,53 @@ lista_campos:
     ;
 
 /* ------ Valores para INSERTAR ------ */
+/* Cada valor produce un <sval>, y lista_valores va concatenando */
 lista_valores:
-      valor                  { /* vacío */ }
-    | lista_valores COMA valor    { /* vacío */ }
+    valor                  
+        { 
+            /* primer elemento: simplemente lo heredamos */
+            $$ = $1;  
+        }
+    | lista_valores COMA valor    
+        {
+            /* Concatenamos: lista_valores previas + ", " + este valor */
+            char *tmp = concat3($1, ", ", $3);
+            free($1);
+            free($3);
+            $$ = tmp;
+        }
     ;
 
-/* Un “valor” puede ser número o cadena; dejamos acción vacía */
+/* Un “valor” puede ser número o cadena; devolvemos un string en $$ */
 valor:
-      NUMERO   { /* vacío */ }
-    | CADENA   { /* vacío */ }
+      NUMERO   
+        {
+            /* Convertimos el número en string */
+            char buf[32];
+            snprintf(buf, sizeof(buf), "%d", $1);
+            $$ = strdup(buf);
+        }
+    | CADENA   
+        {
+            /* Añadimos comillas simples alrededor de la cadena */
+            size_t len = strlen($1);
+            /* +3: 2 comillas + \0 */
+            char *tmp = (char*)malloc(len + 3);
+            if (!tmp) {
+                fprintf(stderr, "Error de memoria al procesar CADENA\n");
+                exit(EXIT_FAILURE);
+            }
+            sprintf(tmp, "'%s'", $1);
+            free($1);
+            $$ = tmp;
+        }
     ;
 
 /* ------ Actualización (UPDATE) ------ */
 actualizacion:
       ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor
     {
-        printf("UPDATE '%s' SET '%s'n tabla '\n", $2, $4);
+        printf("UPDATE '%s' SET '%s' en tabla\n", $2, $4);
     }
   |
       ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor DONDE condicion
@@ -161,4 +213,5 @@ int main() {
     yyparse();
     return 0;
 }
+
 
