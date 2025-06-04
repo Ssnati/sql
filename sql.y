@@ -178,12 +178,12 @@ valor:
 actualizacion:
     ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor
     {
-        printf("UPDATE '%s' SET '%s' en tabla\n", $2, $4);
+        printf("UPDATE '%s' SET '%s' en tabla;\n", $2, $4);
     }
     |
     ACTUALIZAR IDENTIFICADOR ESTABLECER IDENTIFICADOR A valor DONDE condicion
     {
-        printf("Comando ACTUALIZAR con condición en tabla '%s'\n", $2);
+        printf("Comando ACTUALIZAR con condición en tabla '%s';\n", $2);
     }
     ;
 
@@ -191,12 +191,12 @@ actualizacion:
 eliminacion:
     ELIMINAR DE IDENTIFICADOR
     {
-        printf("DELETE FROM '%s'\n", $3);
+        printf("DELETE FROM %s;\n", $3);
     }
     |
     ELIMINAR DE IDENTIFICADOR DONDE condicion
     {
-        printf("DELETE FROM '%s' WHERE %s\n", $3, $5);
+        printf("DELETE FROM %s WHERE %s;\n", $3, $5);
     }
     ;
 

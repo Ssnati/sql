@@ -1,7 +1,7 @@
 -- Consultas DELETE válidas
 borrar de usuarios;
 remover de usuarios donde id igual 1;
-quitar de usuarios donde id mayor que 5;
+quitar de usuarios donde id mayor 5;
 eliminar de usuarios donde id igual 1 y nombre igual 'ana';
 retirar de usuarios donde id igual 1 o nombre igual 'ana';
 
