@@ -83,7 +83,7 @@ insercion:
     {
         /* $3 = IDENTIFICADOR (nombre de la tabla)
            $6 = lista_valores (string con "val1, val2, ...") */
-        printf("INSERT INTO '%s' VALUES (%s)\n", $3, $6);
+        printf("INSERT INTO %s VALUES (%s);\n", $3, $6);
         free($6);
     }
     ;
